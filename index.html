@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cocktail Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Damion&family=DM+Sans:wght@400;500&family=League+Spartan:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #FFFFFF;
+        --ink: #2B2B2B;
+        --accent: #BFA15A;
+        --muted: #6b6b6b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background: #ffffff;
+        font-family: "DM Sans", Arial, sans-serif;
+        color: var(--ink);
+        padding: 32px;
+      }
+
+      .page-wrapper {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 64px 72px 56px;
+      }
+
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      header {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .menu-title {
+        font-size: clamp(48px, 7vw, 72px);
+        font-family: "League Spartan", sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: -0.01em;
+        display: flex;
+        gap: 16px;
+        align-items: baseline;
+        color: var(--ink);
+      }
+
+      .menu-title span:last-child {
+        font-family: "Damion", cursive;
+        font-size: clamp(52px, 6vw, 68px);
+        text-transform: none;
+        letter-spacing: normal;
+        color: var(--accent);
+      }
+
+      .menu-subtitle {
+        font-size: 18px;
+        color: var(--muted);
+        letter-spacing: 0.2rem;
+        text-transform: uppercase;
+      }
+
+      .categories {
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+      }
+
+      .paired-section {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .paired-header {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 48px;
+      }
+
+      .paired-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .paired-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 48px;
+        align-items: start;
+      }
+
+      .paired-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .category {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .category-title {
+        font-family: "Damion", cursive;
+        font-size: 34px;
+        color: var(--accent);
+        margin: 0;
+      }
+
+      .drink {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding-bottom: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .drink:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .drink-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .drink-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .drink-icon img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .drink-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .drink-name {
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0;
+      }
+
+      .ingredients {
+        font-size: 15px;
+        color: #383838;
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      @media (max-width: 900px) {
+        .page-wrapper {
+          width: min(100%, 210mm);
+          padding: clamp(32px, 5vw, 48px);
+        }
+      }
+
+      @media (max-width: 680px) {
+        .menu-title {
+          flex-direction: column;
+          letter-spacing: 0.2rem;
+        }
+
+        .paired-header,
+        .paired-row {
+          gap: 24px;
+        }
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+          padding: 0;
+        }
+
+        .page-wrapper {
+          width: 210mm;
+          min-height: 297mm;
+          padding: 64px 72px 56px;
+        }
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="menu">
+        <header>
+          <div class="menu-title"><span>cocktail</span><span>menu</span></div>
+          <div class="menu-subtitle">Handcrafted classics &amp; original signatures</div>
+        </header>
+        <section class="categories" id="menuCategories"></section>
+      </main>
+    </div>
+
+    <script>
+      const categoryNames = [
+        "Elegant",
+        "Bold",
+        "Playful",
+        "Dramatic"
+      ];
+
+      const glassTypes = ["Tumbler", "Highball", "Martini Bowl"];
+      const glassIcons = ["tumbler.svg", "highball.svg", "bowl.svg"];
+
+      const cocktails = [
+        {
+          name: "Tequila Drift",
+          ingredients: "Tequila, Lime Juice, Sugar Syrup,\nCrushed Ice and Aperol float",
+          category: 2,
+          glass: 1,
+        },
+        {
+          name: "Tequila Drip",
+          ingredients: "Tequila, Lime Juice, Sugar Syrup,\nCrushed Ice and Crème de cassis float",
+          category: 3,
+          glass: 1,
+        },
+        {
+          name: "Aperol Gin Sour",
+          ingredients: "Aperol, Gin, Lime Juice, Sugar Syrup",
+          category: 0,
+          glass: 0,
+        },
+        {
+          name: "Tom Collins",
+          ingredients: "Gin, Lemon Juice, Sugar Syrup, \nSoda Water",
+          category: 0,
+          glass: 1,
+        },
+        {
+          name: "French 75",
+          ingredients: "Gin, Lemon Juice, Sugar Syrup, \nSparkling Wine",
+          category: 0,
+          glass: 1,
+        },
+        {
+          name: "Aperol Collins",
+          ingredients: "Gin, Aperol, Lemon Juice, Sugar Syrup, \nSoda Water",
+          category: 2,
+          glass: 1,
+        },
+        {
+          name: "Americano",
+          ingredients: "Campari, Sweet Vermouth, \nSoda Water",
+          category: 0,
+          glass: 1,
+        },
+        {
+          name: "Gin Basil Smash",
+          ingredients: "Gin, Basil, Lime Juice, Sugar Syrup",
+          category: 1,
+          glass: 0,
+        },
+        {
+          name: "Mojito",
+          ingredients: "Rum, Mint, Cane Sugar, Lime,\nSoda Water",
+          category: 2,
+          glass: 1,
+        },
+        {
+          name: "Caipirinha",
+          ingredients: "Cachaça, Lime,\nBrown Sugar, Crushed Ice",
+          category: 1,
+          glass: 0,
+        },
+        // {
+        //   name: "Caipiroska",
+        //   ingredients: "Vodka, Lime,\nBrown Sugar, Crushed Ice",
+        //   category: 2,
+        //   glass: 0,
+        // },
+        {
+          name: "Cosmopolitan",
+          ingredients: "Vodka, Triple Sec,\nCranberry Syrup, Lime Juice",
+          category: 3,
+          glass: 2,
+        },
+        {
+          name: "Manhattan",
+          ingredients: "Bourbon, Sweet Vermouth, \nBitters",
+          category: 1,
+          glass: 0,
+        },
+        {
+          name: "Negroni",
+          ingredients: "Campari, Gin, Sweet Vermouth",
+          category: 1,
+          glass: 0,
+        },
+        {
+          name: "Caipi Island",
+          ingredients: "Cachaça, Gin, Tequila, Lime, Sugar,\nCrème de cassis, Crushed Ice",
+          category: 3,
+          glass: 0,
+        },
+      ];
+
+      const cocktailSections = categoryNames.map((categoryTitle, index) => ({
+        category: categoryTitle,
+        drinks: cocktails.filter((drink) => drink.category === index),
+      }));
+
+      const container = document.getElementById("menuCategories");
+
+      const createDrinkElement = (drink) => {
+        const drinkEl = document.createElement("article");
+        drinkEl.className = "drink";
+
+        const header = document.createElement("div");
+        header.className = "drink-header";
+
+        const name = document.createElement("h3");
+        name.className = "drink-name";
+        name.textContent = drink.name;
+
+        const iconWrapper = document.createElement("div");
+        iconWrapper.className = "drink-icon";
+        const icon = document.createElement("img");
+        const iconSrc = glassIcons[drink.glass];
+        const iconAlt = glassTypes[drink.glass] || "Glass";
+        icon.src = iconSrc;
+        icon.alt = `${iconAlt} icon`;
+        icon.loading = "lazy";
+        iconWrapper.appendChild(icon);
+
+        header.appendChild(name);
+        header.appendChild(iconWrapper);
+
+        const textWrapper = document.createElement("div");
+        textWrapper.className = "drink-text";
+
+        const ing = document.createElement("p");
+        ing.className = "ingredients";
+        ing.innerHTML = drink.ingredients.replace(/\n/g, "<br />");
+
+        textWrapper.appendChild(ing);
+        drinkEl.appendChild(header);
+        drinkEl.appendChild(textWrapper);
+        return drinkEl;
+      };
+
+      const createCategorySection = (section) => {
+        const sectionEl = document.createElement("section");
+        sectionEl.className = "category";
+
+        const title = document.createElement("h2");
+        title.className = "category-title";
+        title.textContent = section.category;
+        sectionEl.appendChild(title);
+
+        section.drinks.forEach((drink) => {
+          sectionEl.appendChild(createDrinkElement(drink));
+        });
+
+        return sectionEl;
+      };
+
+      const createPairedSection = (leftSection, rightSection) => {
+        const pairedSection = document.createElement("section");
+        pairedSection.className = "paired-section";
+
+        const headerRow = document.createElement("div");
+        headerRow.className = "paired-header";
+        [leftSection, rightSection].forEach((section) => {
+          const title = document.createElement("h2");
+          title.className = "category-title";
+          title.textContent = section ? section.category : "";
+          headerRow.appendChild(title);
+        });
+        pairedSection.appendChild(headerRow);
+
+        const grid = document.createElement("div");
+        grid.className = "paired-grid";
+        const maxRows = Math.max(
+          leftSection ? leftSection.drinks.length : 0,
+          rightSection ? rightSection.drinks.length : 0,
+        );
+
+        for (let i = 0; i < maxRows; i += 1) {
+          const row = document.createElement("div");
+          row.className = "paired-row";
+
+          const leftDrink = leftSection?.drinks[i];
+          const rightDrink = rightSection?.drinks[i];
+
+          [leftDrink, rightDrink].forEach((drink) => {
+            const cell = document.createElement("div");
+            cell.className = "paired-cell";
+            if (drink) {
+              cell.appendChild(createDrinkElement(drink));
+            }
+            row.appendChild(cell);
+          });
+
+          grid.appendChild(row);
+        }
+
+        pairedSection.appendChild(grid);
+        return pairedSection;
+      };
+
+      for (let i = 0; i < cocktailSections.length; i += 2) {
+        const leftSection = cocktailSections[i];
+        const rightSection = cocktailSections[i + 1];
+
+        if (leftSection && rightSection) {
+          container.appendChild(createPairedSection(leftSection, rightSection));
+        } else if (leftSection) {
+          container.appendChild(createCategorySection(leftSection));
+        }
+      }
+    </script>
+  </body>
+</html>

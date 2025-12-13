@@ -156,7 +156,17 @@
       @media (max-width: 680px) {
         .menu-title {
           flex-direction: column;
+          gap: 0;
+          align-items: flex-start;
           letter-spacing: 0.2rem;
+        }
+        .menu-title span {
+          display: block;
+          line-height: 0.85;
+          margin: 0;
+        }
+        .menu-title span:last-child {
+          margin-top: -14px;
         }
 
         .paired-section {
